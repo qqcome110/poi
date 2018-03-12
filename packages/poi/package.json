@@ -1,9 +1,9 @@
 {
-  "name": "poi",
-  "version": "9.6.13",
+  "name": "poi-multi",
+  "version": "0.0.1",
   "description": "Fast prototype and distribute modern web apps like a pro.",
   "repository": {
-    "url": "egoist/poi",
+    "url": "qqcome110/poi-multi",
     "type": "git"
   },
   "main": "lib/index.js",
@@ -22,10 +22,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "xo",
-    "lint:fix": "xo --fix",
-    "postinstall": "node -e \"console.log('\\u001b[35m\\u001b[1mLove Poi? You can now donate to support the author:\\u001b[22m\\u001b[39m\\n> \\u001b[34mhttps://patreon.com/egoist\\u001b[0m')\""
+    "lint:fix": "xo --fix"
   },
-  "author": "egoist <0x142857@gmail.com>",
+  "author": "lenq <qqcome110@gmail.com>",
   "license": "MIT",
   "jest": {
     "testEnvironment": "node"

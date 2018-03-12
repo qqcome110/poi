@@ -84,19 +84,33 @@ class Poi extends EventEmitter {
     return config
   }
 
+  getCompiler() {
+    return new Promise((resolve, reject) => {
+      if (this.compiler.compilers) {
+        this.compiler.compilers.forEach(compiler => resolve(compiler))
+      } else {
+        resolve(this.compiler)
+      }
+      reject()
+    })
+  }
+
   build() {
     return this.prepare()
       .then(() => this.runMiddlewares())
       .then(webpackConfig => {
         this.createCompiler(webpackConfig)
-        const { filename, path: outputPath } = this.compiler.options.output
-        // Only remove dist file when name contains hash
-        const implicitlyRemoveDist =
-          this.options.removeDist !== false &&
-          /\[(chunk)?hash:?\d?\]/.test(filename)
-        if (this.options.removeDist === true || implicitlyRemoveDist) {
-          return promisify(rm)(path.join(outputPath, '*'))
-        }
+
+        return this.getCompiler().then(compiler => {
+          const { filename, path: outputPath } = compiler.options.output
+          // Only remove dist file when name contains hash
+          const implicitlyRemoveDist =
+            this.options.removeDist !== false &&
+            /\[(chunk)?hash:?\d?\]/.test(filename)
+          if (this.options.removeDist === true || implicitlyRemoveDist) {
+            return promisify(rm)(path.join(outputPath, '*'))
+          }
+        })
       })
       .then(() => runWebpack(this.compiler))
   }
@@ -122,7 +136,9 @@ class Poi extends EventEmitter {
   createCompiler(webpackConfig) {
     this.compiler = webpack(webpackConfig)
     if (this.options.inMemory) {
-      this.compiler.outputFileSystem = new MemoryFS()
+      this.getCompiler().then(compiler => {
+        compiler.outputFileSystem = new MemoryFS()
+      })
     }
     return this
   }
